@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
 import { useState,useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function EditUser() {
     const cookies = new Cookies();
@@ -15,7 +16,15 @@ function EditUser() {
     const[mobileCheck,setMobileCheck]=useState(false);
     const [loader,setLoader]=useState(false);
     const [token]=useState("bearer "+cookies.get('token'))
-  
+    
+    const navigate = useNavigate();
+    const handleDeleteLogout=()=>{
+        cookies.remove('privateKey');
+        cookies.remove('publicKey');
+        cookies.remove('token');
+        navigate("/");
+    }
+
     const firstNameSet=(e)=>{
         setFirstName(e.target.value);
         let firstLastNameValidation = /^[A-Za-z]+$/; /** Alpha numeric,space,dot,single quotes and hyphen allowed */
@@ -38,7 +47,6 @@ function EditUser() {
         async function fetchMyApi()
         {
             try {
-                setLoader(true);
                 const requestOptions = {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' ,'Authorization':token},
@@ -50,14 +58,11 @@ function EditUser() {
                     setFirstName(json_res.firstName);
                     setLastName(json_res.lastName);
                     setMobile(json_res.mobileNo);
-                    setLoader(false);
                 }
                 else{
-                    setLoader(false);
                     alert(json_res.message);
                 }
             } catch (err) {
-                setLoader(false);
                 alert("Something went wrong please try again.")
             }
         }
@@ -115,6 +120,7 @@ function EditUser() {
             let json_res = await response.json();
             if (response.status===200) {
                 setLoader(false);
+                handleDeleteLogout();
             }
             else{
                 setLoader(false);
@@ -160,9 +166,13 @@ function EditUser() {
                 </div>
 
                 <div className='d-grid mt-3'>
+                    <Button variant='warning' onClick={handleDeleteLogout}>Log Out</Button>
+                </div>
+
+                <div className='d-grid mt-3'>
                     <Button variant='danger' onClick={deleteUser}>Delete User</Button>
                 </div>
-            </Form>:"Please Wait..."}
+            </Form>:"Please Wait it will take some time to load..."}
         </Container>
     )
 }

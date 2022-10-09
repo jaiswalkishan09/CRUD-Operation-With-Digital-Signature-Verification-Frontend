@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
     const [firstName,setFirstName]=useState("");
@@ -16,6 +17,10 @@ function SignUp() {
     const [password,setPassword]=useState("");
     const[passwordCheck,setPasswordCheck]=useState(true);
     const [loader,setLoader]=useState(false);
+
+    const navigate = useNavigate();
+    const handleLogIn = () => navigate("/");
+    const handleMiddleware=()=>navigate("/middleware");
 
     const firstNameSet=(e)=>{
         setFirstName(e.target.value);
@@ -65,11 +70,12 @@ function SignUp() {
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/signup`,requestOptions)
             console.log(response.status)
             let json_res = await response.json();
-            if (response.status==201) {
+            if (response.status===201) {
                 const cookies = new Cookies();
                 cookies.set('token',json_res.token);
                 cookies.set('publicKey',json_res.publicKey);
                 cookies.set('privateKey',json_res.privateKey);
+                handleMiddleware()
                 setLoader(false);
             }
             else{
@@ -126,6 +132,9 @@ function SignUp() {
                 </Form.Group>
                 <div className='d-grid mt-3'>
                     <Button variant='primary' onClick={createUser}>Sign Up</Button>
+                </div>
+                <div className='d-grid mt-3'>
+                    <p>Already have account please <Button onClick={() => handleLogIn()}>Log In</Button></p>
                 </div>
             </Form>:"Please Wait..."}
         </Container>

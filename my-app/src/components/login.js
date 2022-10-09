@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [email,setEmail]=useState("");
@@ -10,7 +11,10 @@ function Login() {
     const [password,setPassword]=useState("");
     const[passwordCheck,setPasswordCheck]=useState(true);
     const [loader,setLoader]=useState(false);
-
+    
+    const navigate = useNavigate();
+    const handleSignUp = () => navigate("/signup");
+    const handleMiddleware=()=>navigate("/middleware");
 
     const emailSet=(e)=>{
         setEmail(e.target.value);
@@ -38,11 +42,12 @@ function Login() {
             };
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/signin`,requestOptions)
             let json_res = await response.json();
-            if (response.status==200) {
+            if (response.status===200) {
                 const cookies = new Cookies();
                 cookies.set('token',json_res.token);
                 cookies.set('publicKey',json_res.publicKey);
                 cookies.set('privateKey',json_res.privateKey);
+                handleMiddleware();
                 setLoader(false);
             }
             else{
@@ -72,13 +77,16 @@ function Login() {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label className="text-left">Password:</Form.Label>
-                    <Form.Control type='password' placeholder="New Password" onChange={passwordSet}></Form.Control>
+                    <Form.Control type='password' placeholder="Password" onChange={passwordSet}></Form.Control>
                     { passwordCheck?<Form.Text  style={{color:"red"}}>
                     Please Provide valid password at lest length of 8 character.
                     </Form.Text>:""}
                 </Form.Group>
                 <div className='d-grid mt-3'>
                     <Button variant='primary' onClick={loginUser}>Log In</Button>
+                </div>
+                <div className='d-grid mt-3'>
+                    <p>Don't have account please <Button onClick={() => handleSignUp()}>Sign Up</Button></p>
                 </div>
             </Form>:"Please Wait..."}
         </Container>
