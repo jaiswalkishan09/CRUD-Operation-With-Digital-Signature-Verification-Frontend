@@ -6,6 +6,7 @@ import SignUp from "./components/signUp";
 import Login from "./components/login";
 import EditUser from "./components/editUser";
 import Middleware from "./components/middleware";
+import VerifyMessage from "./components/verifyMessage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/signup" element={<SignUp />}></Route>
       <Route path="/edit" element={<EditUser />}></Route>
       <Route path="/middleware" element={<Middleware />}></Route>
+      <Route path="/verify" element={<VerifyMessage />}></Route>
     </Routes>
   </BrowserRouter>
   );
