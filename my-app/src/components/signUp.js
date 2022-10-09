@@ -72,6 +72,10 @@ function SignUp() {
                 cookies.set('privateKey',json_res.privateKey);
                 setLoader(false);
             }
+            else{
+                setLoader(false);
+                alert(json_res.message);
+            }
         }
         else{
             alert("Please sign up all the fields with valid data.")
