@@ -60,12 +60,12 @@ function Login() {
                 let json_res = await response.json();
                 console.log(json_res)
                 if (response.status===200) {
-                    setResult("Orignal Message.It was not altered during transfer.")
+                    setResult("Orignal Message.It was not changed during transfer.")
                     setLoader(false);
                 }
                 else if(response.status===400)
                 {
-                    setResult("Not Orignal Message.It was altered/changed during transfer.")
+                    setResult("Not Orignal Message.It was changed during transfer.")
                     setLoader(false);
                 }
                 else{
@@ -89,14 +89,14 @@ function Login() {
 
                 <Form.Group>
                     <Form.Label className="text-left">Orignal message you want to send:</Form.Label>
-                    <Form.Control type='text' placeholder="Orignal Message" onChange={orignalMessageSet}></Form.Control>
+                    <Form.Control type='text' placeholder="Orignal Message" onChange={orignalMessageSet} value={orignalMessage}></Form.Control>
                     { orignalMessageCheck?<Form.Text  style={{color:"red"}}>
                     Please Provide a message of atleast 1 length in character.
                     </Form.Text>:""}
                 </Form.Group>
                 <Form.Group>
                     <Form.Label className="text-left">Message user going to receive:</Form.Label>
-                    <Form.Control type='text' placeholder="Received Message" onChange={messageReceivedSet}></Form.Control>
+                    <Form.Control type='text' placeholder="Received Message" onChange={messageReceivedSet} value={messageReceived}></Form.Control>
                     { messageReceivedCheck?<Form.Text  style={{color:"red"}}>
                     Please Provide a message of atleast 1 length in character.
                     </Form.Text>:""}

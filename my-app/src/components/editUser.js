@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
 import { useState,useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+const _sodium = require('libsodium-wrappers');
 
 function EditUser() {
     const cookies = new Cookies();
@@ -15,7 +16,9 @@ function EditUser() {
     const [mobile,setMobile]=useState("");
     const[mobileCheck,setMobileCheck]=useState(false);
     const [loader,setLoader]=useState(false);
-    const [token]=useState("bearer "+cookies.get('token'))
+    const [token]=useState("bearer "+cookies.get('token'));
+    let[privateKey]=useState(cookies.get('privateKey'));
+    let [publicKey]=useState(cookies.get('publicKey'));
     
     const navigate = useNavigate();
     const handleDeleteLogout=()=>{
@@ -81,11 +84,18 @@ function EditUser() {
                 "firstName":firstName,
                 "lastName":lastName,
                 "mobileNo":mobile,
-            }
+            };
+            data=JSON.stringify(data);
+            await _sodium.ready;
+            let sodium = _sodium;
+            publicKey=sodium.from_base64(publicKey);
+            privateKey=sodium.from_base64(privateKey)
+            let signature=sodium.crypto_sign_detached(data,privateKey,"uint8array",publicKey);
+            signature=sodium.to_base64(signature);
             const requestOptions = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json','Authorization':token },
-                body: JSON.stringify(data)
+                headers: { 'Content-Type': 'application/json','Authorization':token,'Signature':signature },
+                body: data
             };
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/usersauth/updateUserDetails`,requestOptions)
             let json_res = await response.json();
