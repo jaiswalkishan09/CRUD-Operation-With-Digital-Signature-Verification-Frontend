@@ -95,7 +95,7 @@ function Login() {
                     </Form.Text>:""}
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label className="text-left">Message user going to receive:</Form.Label>
+                    <Form.Label className="text-left">Message server is going to receive:</Form.Label>
                     <Form.Control type='text' placeholder="Received Message" onChange={messageReceivedSet} value={messageReceived}></Form.Control>
                     { messageReceivedCheck?<Form.Text  style={{color:"red"}}>
                     Please Provide a message of atleast 1 length in character.
